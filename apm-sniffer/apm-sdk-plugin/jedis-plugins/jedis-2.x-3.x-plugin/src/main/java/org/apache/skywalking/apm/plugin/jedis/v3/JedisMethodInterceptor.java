@@ -30,6 +30,7 @@ import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor {
@@ -60,6 +61,10 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
             return Optional.empty();
         }
         Object argument = allArguments[0];
+        // include byte array
+        if  (argument instanceof byte[]) {
+            return Optional.of(new String((byte[]) argument, StandardCharsets.UTF_8));
+        }
         // include null
         if (!(argument instanceof String)) {
             return Optional.empty();
